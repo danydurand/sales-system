@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using SistemaVenta.Entity;
-using System.Linq.Expresions;
+using System.Linq.Expressions;
 using SistemaVenta.DAL.DBContext;
 using SistemaVenta.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +35,7 @@ namespace SistemaVenta.DAL.Implementacion
                         prod.Stock = prod.Stock - dv.Cantidad;
                         _dbContext.Productos.Update(prod);
                     }
-                    await _dbContext.SaveChagesAsync();
+                    await _dbContext.SaveChangesAsync();
 
                     NumeroCorrelativo correlativo = _dbContext.NumeroCorrelativos.Where(n => n.Gestion == "venta").First();
                     correlativo.UltimoNumero = correlativo.UltimoNumero + 1;
@@ -69,12 +69,12 @@ namespace SistemaVenta.DAL.Implementacion
         public async Task<List<DetalleVenta>> Reporte(DateTime fechaInicio, DateTime fechaFin)
         {
             List<DetalleVenta> listaResumen = await _dbContext.DetalleVenta
-                .Include(v => v.IdVentaNavegation)
-                .ThenInclude(u => u.IdUsuarioNavegation)
-                .Include(v => v.IdVentaNavegation)
-                .ThenInclude(tdv => tdv.IdTipoDocumentoVentaNavegation)
-                .Where(dv => dv.IdVentaNavegation.FechaRegistro.Value.Date >= fechaInicio &&
-                    dv.IdVentaNavegation.FechaRegistro.Value.Date >= fechaFin).ToListAsync();
+                .Include(v => v.IdVentaNavigation)
+                .ThenInclude(u => u.IdUsuarioNavigation)
+                .Include(v => v.IdVentaNavigation)
+                .ThenInclude(tdv => tdv.IdTipoDocumentoVentaNavigation)
+                .Where(dv => dv.IdVentaNavigation.FechaRegistro.Value.Date >= fechaInicio &&
+                    dv.IdVentaNavigation.FechaRegistro.Value.Date >= fechaFin).ToListAsync();
             return listaResumen;
         }
 

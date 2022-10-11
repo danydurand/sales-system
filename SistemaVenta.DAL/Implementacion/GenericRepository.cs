@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using System.Linq.Expresions;
+using System.Linq.Expressions;
 using SistemaVenta.DAL.DBContext;
 using SistemaVenta.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +20,7 @@ namespace SistemaVenta.DAL.Implementacion
             _dbContext = dbContext;
         }
 
-        public async Task<TEntity> Obtener(Expresion<Func<TEntity, bool>> filtro)
+        public async Task<TEntity> Obtener(Expression<Func<TEntity, bool>> filtro)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace SistemaVenta.DAL.Implementacion
             }
         }
 
-        public async Task<IQueryable<TEntity>> Consultar(Expresion<Func<TEntity, bool>> filtro = null)
+        public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
         {
             IQueryable<TEntity> queryEntidad = filtro == null 
                 ? _dbContext.Set<TEntity>()
