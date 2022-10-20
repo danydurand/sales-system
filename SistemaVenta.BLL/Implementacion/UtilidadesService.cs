@@ -11,13 +11,13 @@ namespace SistemaVenta.BLL.Implementacion
 {
     public class UtilidadesService : IUtilidadesService
     {
-        string GenerarClave()
+        public string GenerarClave()
         {
             string clave = Guid.NewGuid().ToString("N").Substring(0,6);
             return clave;
         }
 
-        string ConvertirSha256(string texto)
+        public string ConvertirSha256(string texto)
         {
             StringBuilder sb = new StringBuilder();
 
