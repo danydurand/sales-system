@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SistemaVenta.Entity
+namespace SistemaVenta.AplicacionWeb.Models.ViewModels
 {
-    public class Negocio
+    public class VMNegocio
     {
         public int IdNegocio { get; set; }
         public string? UrlLogo { get; set; }
@@ -13,7 +10,8 @@ namespace SistemaVenta.Entity
         public string? Correo { get; set; }
         public string? Direccion { get; set; }
         public string? Telefono { get; set; }
-        public decimal? PorcentajeImpuesto { get; set; }
+        public string? PorcentajeImpuesto { get; set; }
         public string? SimboloMoneda { get; set; }
+
     }
 }
