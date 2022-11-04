@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
+using SistemaVenta.Entity;
 using Microsoft.AspNetCore.Mvc;
+using SistemaVenta.BLL.Interfaces;
 using SistemaVenta.AplicacionWeb.Models;
 using SistemaVenta.AplicacionWeb.Models.ViewModels;
 using SistemaVenta.AplicacionWeb.Utilidades.Response;
-using SistemaVenta.BLL.Interfaces;
-using SistemaVenta.Entity;
+
+using static System.Console;
 
 namespace SistemaVenta.AplicacionWeb.Controllers;
 
@@ -13,7 +15,7 @@ public class UsuarioController : Controller
 {
     private readonly IMapper _mapper;
     private readonly IRolService _rolServicio;
-    private readonly IUsuarioService _rolServicio;
+    private readonly IUsuarioService _usuarioServicio;
 
 
     public UsuarioController(IUsuarioService usuarioService, 
@@ -47,12 +49,9 @@ public class UsuarioController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Crear([FromForm] IFormFile foto, 
-        [FromForm] string modelo)
+    public async Task<IActionResult> Crear([FromForm] IFormFile foto, [FromForm] string modelo)
     {
-
         GenericResponse<VMUsuario> gResponse = new GenericResponse<VMUsuario>();
-
         try
         {
             VMUsuario vmUsuario = JsonConvert.DeserializeObject<VMUsuario>(modelo);
@@ -61,16 +60,21 @@ public class UsuarioController : Controller
             Stream fotoStream = null;
 
             if (foto != null) {
+                System.Console.WriteLine("Hay foto");
                 string nombreCodificado = Guid.NewGuid().ToString("N");
                 string extension = Path.GetExtension(foto.FileName);
                 nombreFoto = string.Concat(nombreCodificado, extension);
-                fotoStream = foto.OpenReadStrem();
+                fotoStream = foto.OpenReadStream();
             }
 
             string urlPlantillaCorreo = 
                 $"{this.Request.Scheme}://{this.Request.Host}/Plantilla/EnviarClave?correo=[correo]&clave=[clave]"; 
-            Usuario usuarioCreado = await _usuarioServicio.Crear(_mapper.Map<Usuario>(vmUsuario), 
-                fotoStream, nombreFoto, urlPlantillaCorreo);
+            Usuario usuarioCreado = await _usuarioServicio.Crear(
+                _mapper.Map<Usuario>(vmUsuario), 
+                fotoStream, 
+                nombreFoto, 
+                urlPlantillaCorreo
+            );
             vmUsuario = _mapper.Map<VMUsuario>(usuarioCreado);
 
             gResponse.Estado = true;
@@ -85,8 +89,7 @@ public class UsuarioController : Controller
     }
 
     [HttpPut]
-    public async Task<IActionResult> Editar([FromForm] IFormFile foto, 
-        [FromForm] string modelo)
+    public async Task<IActionResult> Editar([FromForm] IFormFile foto, [FromForm] string modelo)
     {
 
         GenericResponse<VMUsuario> gResponse = new GenericResponse<VMUsuario>();
@@ -102,7 +105,7 @@ public class UsuarioController : Controller
                 string nombreCodificado = Guid.NewGuid().ToString("N");
                 string extension = Path.GetExtension(foto.FileName);
                 nombreFoto = string.Concat(nombreCodificado, extension);
-                fotoStream = foto.OpenReadStrem();
+                fotoStream = foto.OpenReadStream();
             }
 
             Usuario usuarioEditado = await _usuarioServicio.Editar(_mapper.Map<Usuario>(vmUsuario), 

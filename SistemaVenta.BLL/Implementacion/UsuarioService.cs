@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Linq;
+using static System.Console;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ namespace SistemaVenta.BLL.Implementacion
         {
             _repositorio = repositorio;
             _fireBaseService = fireBaseService;
-            _utilidadesService = _utilidadesService;
+            _utilidadesService = utilidadesService;
             _correoService = correoService;
         }
 
@@ -45,6 +46,7 @@ namespace SistemaVenta.BLL.Implementacion
                 throw new TaskCanceledException("El correo ya existe");
             }
 
+
             try
             {
                 string claveGenerada = _utilidadesService.GenerarClave();
@@ -52,12 +54,16 @@ namespace SistemaVenta.BLL.Implementacion
                 entidad.NombreFoto = NombreFoto;
 
                 if (Foto != null) {
+                    Console.WriteLine($"Si hay foto...");
                     string urlFoto = await _fireBaseService.SubirStorage(Foto, "carpeta_usuario", NombreFoto);
+                    Console.WriteLine($"El servicio FireBase retorno: {urlFoto}");
                     entidad.UrlFoto = urlFoto;
                 }
 
                 Usuario usuarioCreado = await _repositorio.Crear(entidad);
+
                 if (usuarioCreado.IdUsuario == 0) {
+                    Console.WriteLine($"Error creado el Usuario...");
                     throw new TaskCanceledException("Error creando el Usuario");
                 }
 
@@ -112,13 +118,14 @@ namespace SistemaVenta.BLL.Implementacion
                 usuarioEditar.Nombre = entidad.Nombre;
                 usuarioEditar.Correo = entidad.Correo;
                 usuarioEditar.Telefono = entidad.Telefono;
+                usuarioEditar.EsActivo = entidad.EsActivo;
                 usuarioEditar.IdRol = entidad.IdRol;
 
                 if (usuarioEditar.NombreFoto == "") {
-                    usuarioEditar.NombreFoto = entidad.NombreFoto;
+                    usuarioEditar.NombreFoto = NombreFoto;
                 }
                 if (Foto != null) {
-                    string urlFoto = await _fireBaseService.SubirStorage(Foto, "carpeta_usuario", usuarioEditar.NombreFoto);
+                    string urlFoto = await _fireBaseService.SubirStorage(Foto, "carpeta_usuario", NombreFoto);
                     usuarioEditar.UrlFoto = urlFoto;
                 }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Linq;
+using static System.Console;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -13,7 +14,9 @@ namespace SistemaVenta.BLL.Implementacion
     {
         public string GenerarClave()
         {
+            Console.WriteLine("Llegando a generar la clave");
             string clave = Guid.NewGuid().ToString("N").Substring(0,6);
+            Console.WriteLine($"La clave es: {clave}");
             return clave;
         }
 
