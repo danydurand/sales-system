@@ -25,7 +25,6 @@ namespace SistemaVenta.BLL.Implementacion
 
         public async Task<string> SubirStorage(Stream StreamArchivo, string CarpetaDestino, string NombreArchivo)
         {
-            Console.WriteLine($"Llegando al SubirStorage");
             string UrlImagen = "";
 
             try
@@ -33,13 +32,9 @@ namespace SistemaVenta.BLL.Implementacion
                 IQueryable<Configuracion> query = await _repositorio.Consultar(c => c.Recurso.Equals("Firebase_Storage"));
                 Dictionary<string, string> Config = query.ToDictionary(keySelector: c => c.Propiedad, elementSelector: c => c.Valor);
 
-                Console.WriteLine($"Configuracion: api_key = {Config["api_key"]}, email = {Config["email"]}, clave = {Config["clave"]}");
-
                 var auth = new FirebaseAuthProvider(new FirebaseConfig(Config["api_key"]));
 
                 var a = await auth.SignInWithEmailAndPasswordAsync(Config["email"], Config["clave"]);
-
-                Console.WriteLine($"Usuario FireBase: {a}");
 
                 var cancellation = new CancellationTokenSource();
 
@@ -54,8 +49,6 @@ namespace SistemaVenta.BLL.Implementacion
                     .PutAsync(StreamArchivo, cancellation.Token);
 
                 UrlImagen = await task;
-                Console.WriteLine($"UrlImage: {UrlImagen}");
-
             }
             catch (System.Exception ex)
             {
@@ -63,7 +56,6 @@ namespace SistemaVenta.BLL.Implementacion
                 Console.WriteLine($"Error: {ex.Message}");
             }
 
-            Console.WriteLine($"Retornando: {UrlImagen}");
             return UrlImagen;
         }
         
